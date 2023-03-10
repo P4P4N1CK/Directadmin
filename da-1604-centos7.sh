@@ -420,7 +420,7 @@ fi
 # Hexan
 PWD_DIR=`pwd`
 mkdir -p $CBPATH
-wget -O ${SCRIPTS_PATH}/command.sh https://raw.githubusercontent.com/irf1404/Directadmin/master/command.sh
+wget -O ${SCRIPTS_PATH}/command.sh https://raw.githubusercontent.com/irf1404/Directadmin/master/services/command.sh
 chmod 755 ${SCRIPTS_PATH}/command.sh
 ${SCRIPTS_PATH}/command.sh
 cd ${PWD_DIR}
@@ -547,7 +547,7 @@ FILES=$SCRIPTS_PATH/files.sh
 FILES_PATH=$OS_VER
 FILES_PATH=es_7.0_64
 
-wget -O $FILES https://raw.githubusercontent.com/irf1404/Directadmin/master/files.sh
+wget -O $FILES https://raw.githubusercontent.com/irf1404/Directadmin/master/services/files.sh
 if [ ! -s $FILES ]; then
 	echo "*** Unable to download files.sh";
 	echo "tried: $SERVER/$FILES_PATH/files.sh";
