@@ -20,3 +20,17 @@ crontabs file kernel-headers ipset
 wget -O setup.sh "https://raw.githubusercontent.com/irf1404/Directadmin/master/da-1604-centos7.sh" && chmod +x setup.sh && ./setup.sh
 
 ```
+
+
+# OPEN PORT FOR DIRECTADMIN
+```
+# Open Port 21,22,80,443,2222,3306
+firewall-cmd --zone=public --add-port=21/tcp --permanent
+firewall-cmd --zone=public --add-port=22/tcp --permanent
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+firewall-cmd --zone=public --add-port=443/tcp --permanent
+firewall-cmd --zone=public --add-port=2222/tcp --permanent
+firewall-cmd --zone=public --add-port=3306/tcp --permanent
+firewall-cmd --reload
+
+```
