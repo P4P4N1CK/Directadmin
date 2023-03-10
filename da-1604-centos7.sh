@@ -196,7 +196,7 @@ autoconf automake libtool which patch mailx bzip2-devel lsof glibc-headers kerne
 psmisc net-tools systemd-devel libdb-devel perl-DBI perl-Perl4-CoreLibs perl-libwww-perl xfsprogs rsyslog \
 logrotate crontabs file kernel-headers ipset webalizer krb5-libs krb5-devel e2fsprogs e2fsprogs-devel 
 
-
+yesno=n;
 while [ "$yesno" = "n" ];
 do
 {
