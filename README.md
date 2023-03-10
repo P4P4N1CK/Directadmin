@@ -1,10 +1,11 @@
-Author: Nguyễn Trung Hậu<br>
+N@lled By: Nguyễn Trung Hậu<br>
 Email: ken.hdpro@gmail.com<br>
 Facebook: http://fb.com/haunguyenckc<br>
+Directadmin 1.604 đã được N@ll chỉ cài được cho centOS 7 64bit còn centOS 8 thì mình không biết :D
 
 # COMMON PRE-INSTALL COMMANDS
 ```
-# CentOS 7
+# Pre-Install CentOS 7
 yum -y install wget tar gcc gcc-c++ flex bison make bind bind-libs bind-utils openssl openssl-devel perl quota libaio \
 libcom_err-devel libcurl-devel gd zlib-devel zip unzip libcap-devel cronie bzip2 cyrus-sasl-devel perl-ExtUtils-Embed \
 autoconf automake libtool which patch mailx bzip2-devel lsof glibc-headers kernel-devel expat-devel \

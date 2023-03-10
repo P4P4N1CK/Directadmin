@@ -196,41 +196,9 @@ autoconf automake libtool which patch mailx bzip2-devel lsof glibc-headers kerne
 psmisc net-tools systemd-devel libdb-devel perl-DBI perl-Perl4-CoreLibs perl-libwww-perl xfsprogs rsyslog \
 logrotate crontabs file kernel-headers ipset webalizer krb5-libs krb5-devel e2fsprogs e2fsprogs-devel 
 
-yesno=n;
-while [ "$yesno" = "n" ];
-do
-{
-	echo -n "Please enter your Client ID : ";
-	read CID;
-
-	echo -n "Please enter your License ID : ";
-	read LID;
-
-	echo "Please enter your hostname (server.domain.com)";
-	echo "It must be a Fully Qualified Domain Name";
-	echo "Do *not* use a domain you plan on using for the hostname:";
-	echo "eg. don't use domain.com. Use server.domain.com instead.";
-	echo "Do not enter http:// or www";
-	echo "";
-
-	echo "Your current hostname is: ${HOST}";
-	echo "Leave blank to use your current hostname";
-	OLD_HOST=$HOST
-	echo "";
-	echo -n "Enter your hostname (FQDN) : ";
-	read HOST;
-	if [ "$HOST" = "" ]; then
-		HOST=$OLD_HOST
-	fi
-
-	echo "Client ID:  $CID";
-	echo "License ID: $LID";
-	echo "Hostname: $HOST";
-	echo -n "Is this correct? (y,n) : ";
-	read yesno;
-}
-done;
-
+CID=0;
+LID=0;
+HOST="server.test.com"
 
 ############
 
