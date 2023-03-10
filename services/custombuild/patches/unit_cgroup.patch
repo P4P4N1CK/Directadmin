@@ -1,0 +1,27 @@
+--- ./src/nxt_process.c_original	2021-02-04 17:22:33.000000000 +0200
++++ ./src/nxt_process.c	2021-02-28 15:46:34.595278821 +0200
+@@ -76,6 +76,24 @@
+     /* Clean inherited cached thread tid. */
+     task->thread->tid = 0;
+ 
++    char user_slice[128];
++    snprintf(user_slice, sizeof(user_slice), "/sys/fs/cgroup/user.slice/user-%d.slice", process->user_cred->uid);
++    if (mkdir(user_slice, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == 0 || errno == EEXIST) {
++        strcat(user_slice, "/unit-exec.scope");
++        if (mkdir(user_slice, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == 0 || errno == EEXIST) {
++            strcat(user_slice, "/cgroup.procs");
++            FILE *fp = fopen(user_slice, "a");
++            if (fp == NULL) {
++                nxt_alert(task, "Error opening %s for writing: %s", user_slice, strerror(errno));
++            } else {
++                nxt_debug(task, "cgroupv2 user-slice %s, %s: %PI", user_slice, process->name, process->pid);
++                fprintf(fp, "%d\n", (int) process->pid);
++                fclose(fp);
++            }
++        }
++    }
++
++
+ #if (NXT_HAVE_CLONE && NXT_HAVE_CLONE_NEWPID)
+     if (nxt_is_clone_flag_set(process->isolation.clone.flags, NEWPID)) {
+         ssize_t  pidsz;

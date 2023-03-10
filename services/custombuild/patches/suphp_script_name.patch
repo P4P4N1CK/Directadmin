@@ -1,0 +1,10 @@
+--- a/src/Application.cpp	2012-10-26 02:03:17.813538136 -0600
++++ b/src/Application.cpp	2012-10-26 02:09:30.747843504 -0600
+@@ -526,6 +526,7 @@
+             std::string interpreterPath = interpreter.substr(4);
+             CommandLine cline;
+             cline.putArgument(interpreterPath);
++            cline.putArgument(scriptFilename);
+             API_Helper::getSystemAPI().execute(interpreterPath, cline, env);
+         } else if (mode == TARGETMODE_SELFEXECUTE) {
+             CommandLine cline;

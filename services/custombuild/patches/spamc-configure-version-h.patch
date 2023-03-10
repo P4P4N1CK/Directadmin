@@ -1,0 +1,11 @@
+--- spamc/configure.pl.orig	2017-09-04 17:15:34.577682508 -0600
++++ spamc/configure.pl	2017-09-04 17:15:49.952822059 -0600
+@@ -66,7 +66,7 @@
+   # Do the same thing as for the preprocessor below.
+   package version_h;
+   my $Z = $0;
+-  local $0    = "version.h.pl";
++  local $0    = "./version.h.pl";
+   local @ARGV = ();
+   # Got to check for defined because the script returns shell error level!
+   unless (defined do $0) {

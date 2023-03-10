@@ -1,0 +1,20 @@
+--- src/plugins/quota/quota-maildir.c.orig	2020-02-05 19:21:08.582998417 -0700
++++ src/plugins/quota/quota-maildir.c	2020-02-05 19:21:22.184998798 -0700
+@@ -84,7 +84,7 @@
+ 
+ 		p = strstr(dp->d_name, ",S=");
+ 		num = (uoff_t)-1;
+-		if (p != NULL) {
++		if (0 && p != NULL) {
+ 			/* ,S=nnnn[:,] */
+ 			p += 3;
+ 			for (num = 0; *p >= '0' && *p <= '9'; p++)
+@@ -104,7 +104,7 @@
+ 			str_truncate(path, len);
+ 			str_append(path, dp->d_name);
+ 			if (stat(str_c(path), &st) == 0) {
+-				*total_bytes += st.st_size;
++				*total_bytes += st.st_blocks * 512;
+ 				*total_count += 1;
+ 			} else if (errno != ENOENT && errno != ESTALE) {
+ 				*error_r = t_strdup_printf(

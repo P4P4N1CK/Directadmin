@@ -1,0 +1,11 @@
+--- src/tls.c.orig	2015-05-27 00:16:48.000000000 -0600
++++ src/tls.c	2015-05-27 00:23:53.000000000 -0600
+@@ -48,7 +48,7 @@
+ 
+ static int tls_init_ecdh_curve(void)
+ {
+-# ifndef SSL_OP_SINGLE_ECDH_USE
++# if !defined(SSL_OP_SINGLE_ECDH_USE) || !defined(EC_KEY)
+     errno = ENOTSUP;
+     return -1;
+ # else

@@ -1,0 +1,37 @@
+--- support/suexec.c.orig	2021-02-04 17:05:35.900988770 -0700
++++ support/suexec.c	2021-02-04 17:07:07.559046274 -0700
+@@ -495,6 +495,34 @@
+         exit(108);
+     }
+ 
++    //DA_START
++    char user_slice[128];
++    snprintf(user_slice, sizeof(user_slice), "/sys/fs/cgroup/user.slice/user-%d.slice", uid);
++    if (mkdir(user_slice, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == 0 || errno == EEXIST) {
++	strcat(user_slice, "/directadmin-exec.scope");
++	if (mkdir(user_slice, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == 0 || errno == EEXIST) {
++	        strcat(user_slice, "/cgroup.procs");
++	        FILE *fp = fopen(user_slice, "a");
++	        //if there is no cgroup, we may hit permission denied. Wait moment.
++	        if (fp == NULL) {
++	            struct timespec ns;
++	            ns.tv_sec = 0;
++	            ns.tv_nsec = 10 * 1000000; //10ms
++	            int count=20;
++	            while (fp == NULL && count--) {
++	                nanosleep(&ns, NULL);
++	                fp = fopen(user_slice, "a");
++	            }
++	        }
++	        if (fp == NULL) {
++	            log_err("Error opening %s for writing: %s", user_slice, strerror(errno));
++	        } else {
++	            fprintf(fp, "%d\n", (int) getpid());
++	            fclose(fp);
++	        }
++	}
++    }
++    //DA_END
+     /*
+      * Change UID/GID here so that the following tests work over NFS.
+      *

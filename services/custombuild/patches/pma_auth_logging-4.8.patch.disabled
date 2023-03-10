@@ -1,0 +1,14 @@
+--- libraries/classes/Logging.php.orig	2018-04-15 18:54:36.973996388 -0600
++++ libraries/classes/Logging.php	2018-04-15 19:03:09.094996350 -0600
+@@ -51,9 +51,9 @@
+     public static function getLogMessage($user, $status)
+     {
+         if ($status == 'ok') {
+-            return 'user authenticated: ' . $user . ' from ' .  Core::getIp();
++            return "user authenticated: '" . $user . "' from '" .  Core::getIp() ."'";
+         }
+-        return 'user denied: ' . $user . ' (' . $status . ') from ' .  Core::getIp();
++        return "user denied: '" . $user . "' (" . $status . ") from '" .  Core::getIp() ."'";
+     }
+ 
+     /**

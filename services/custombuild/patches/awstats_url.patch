@@ -1,0 +1,11 @@
+--- awstats_buildstaticpages.pl.orig	2012-12-10 01:51:41.000000000 -0700
++++ awstats_buildstaticpages.pl	2012-12-10 02:34:12.000000000 -0700
+@@ -425,7 +425,7 @@
+ my $cpt=0;
+ my $NoLoadPlugin="";
+ if ($BuildPDF) { $NoLoadPlugin.="tooltips,rawlog,hostinfo"; }
+-my $smallcommand="\"$Awstats\" -config=$SiteConfig".($BuildPDF?" -buildpdf":"").($NoLoadPlugin?" -noloadplugin=$NoLoadPlugin":"").($DatabaseBreak?" -databasebreak=$DatabaseBreak":"")." -staticlinks".($OutputSuffix ne $SiteConfig?"=$OutputSuffix":"");
++my $smallcommand="\"$Awstats\" -config=$SiteConfig".($BuildPDF?" -buildpdf":"").($NoLoadPlugin?" -noloadplugin=$NoLoadPlugin":"").($DatabaseBreak?" -databasebreak=$DatabaseBreak":"")." -staticlinks".($OutputSuffix ne $SiteConfig?"=awstats.$OutputSuffix":"");
+ if ($StaticExt && $StaticExt ne 'html')     { $smallcommand.=" -staticlinksext=$StaticExt"; }
+ if ($DirIcons)      { $smallcommand.=" -diricons=$DirIcons"; }
+ if ($DirConfig)     { $smallcommand.=" -configdir=$DirConfig"; }

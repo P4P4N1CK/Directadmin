@@ -1,0 +1,26 @@
+--- mod_aclr2.c.unpatched	2015-05-12 20:12:32.687000116 +0200
++++ mod_aclr2.c	2015-05-13 10:23:09.215000116 +0200
+@@ -147,6 +147,23 @@
+         real_uri += docroot_len;
+     }
+ 
++    if (!strncmp(real_uri, "/~", 2))
++    {
++        char *first = real_uri+1; //points to ~
++        //and then do the same thing for the shifting.
++        char *bbb = strchr(first, '/'); //points to 2nd /
++        if (bbb)
++        {
++            int size = strlen(bbb);
++            memmove(real_uri, bbb, size);
++            real_uri[size] = '\0'; //ensure string is null terminated.
++        }
++        else
++        {
++            real_uri[1] = '\0';    //stomp on the ~ making it "/"
++        }
++    } 
++
+     snprintf(iredirect, sizeof(iredirect), "%s%s", idhead, real_uri);
+ 
+     aclr_debug(3, r->server, "trying to process request: %s%s -> %s",

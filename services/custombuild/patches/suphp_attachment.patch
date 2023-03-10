@@ -1,0 +1,23 @@
+diff -Nru a/src/apache2/mod_suphp.c b/src/apache2/mod_suphp.c
+--- a/src/apache2/mod_suphp.c	2009-08-03 14:38:38.000000000 +0000
++++ b/src/apache2/mod_suphp.c	2012-09-06 21:36:51.290474099 +0000
+@@ -523,17 +523,8 @@
+ 
+ static void suphp_discard_output(apr_bucket_brigade *bb) {
+   apr_bucket *b;
+-  const char *buf;
+-  apr_size_t len;
+-  apr_status_t rv;
+-  for (b = APR_BRIGADE_FIRST(bb); b != APR_BRIGADE_SENTINEL(bb); b = APR_BUCKET_NEXT(b)) {
+-      if (APR_BUCKET_IS_EOS(b)) {
+-          break;
+-      }
+-      rv = apr_bucket_read(b, &buf, &len, APR_BLOCK_READ);
+-      if (rv != APR_SUCCESS) {
+-          break;
+-      }
++  while ((b = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
++    APR_BUCKET_REMOVE(b);
+   }
+ }
+ 

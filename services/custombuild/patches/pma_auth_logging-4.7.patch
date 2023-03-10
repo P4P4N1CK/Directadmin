@@ -1,0 +1,88 @@
+diff -ruN libraries.orig/common.inc.php libraries/common.inc.php
+--- libraries.orig/common.inc.php	2017-03-29 07:15:31.000000000 -0500
++++ libraries/common.inc.php	2017-04-08 19:13:32.936610526 -0500
+@@ -649,6 +649,9 @@
+         $auth_plugin = new $fqnAuthClass($plugin_manager);
+ 
+         if (! $auth_plugin->authCheck()) {
++            //DA logging
++            Logging::log_to_file('', "not authenticated");
++
+             /* Force generating of new session on login */
+             PMA_secureSession();
+             $auth_plugin->auth();
+diff -ruN libraries.orig/Logging.php libraries/Logging.php
+--- libraries.orig/Logging.php	2017-03-29 07:15:31.000000000 -0500
++++ libraries/Logging.php	2017-04-08 19:14:21.119610531 -0500
+@@ -9,6 +9,9 @@
+  */
+ namespace PMA\libraries;
+ 
++define("PMA\libraries\AUTH_LOG_DIR", "./log");
++define("PMA\libraries\AUTH_LOG_FILE", "./log/auth.log");
++
+ /**
+  * Misc logging functions
+  *
+@@ -39,5 +42,61 @@
+             );
+             closelog();
+         }
++	Logging::log_to_file($user, $status);
+     }
++
++  private static function ensure_log_dir()
++  {
++        $LOG_DIR=AUTH_LOG_DIR;
++        if (is_dir($LOG_DIR))
++                return true;
++
++        if (!mkdir($LOG_DIR, 0770))
++                return false;
++  }
++
++  public static function log_to_file($user, $status)
++  {
++        if (!Logging::ensure_log_dir())
++                return false;
++
++        $LOG_FILE=AUTH_LOG_FILE;
++
++        if ($user == '')
++        {
++                $user = PMA_getenv('PHP_AUTH_USER');
++        }
++
++        if ($user == '')
++                return true;
++
++        //remove any ' characters from $user
++        $user = urlencode($user);
++
++        //check for logout
++        if ($status == 'not authenticated')
++        {
++                if (isset($_GET['old_usr']) && isset($_SERVER['PHP_AUTH_USER']))
++                {
++                        if ($_GET['old_usr'] == $_SERVER['PHP_AUTH_USER'])
++                        {
++                                $status = 'logout';
++                        }
++                }
++        }
++
++        $log_str = date('M d H:i:s').":: pma auth user='$user' status='$status' ip='".$_SERVER["REMOTE_ADDR"]."'";
++
++        $fp = fopen($LOG_FILE, 'a');
++        if ($fp === false)
++        {
++                //log to apache error log instead
++                error_log($log_str."\n");
++                return;
++        }
++
++        fwrite($fp, $log_str."\n");
++
++        fclose($fp);
++  }
+ }

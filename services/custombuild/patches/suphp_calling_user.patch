@@ -1,0 +1,28 @@
+--- a/src/Application.cpp	2009-03-14 19:55:25.000000000 +0200
++++ b/src/Application.cpp	2011-01-25 14:55:25.000000000 +0300
+@@ -169,11 +169,6 @@ void suPHP::Application::printAboutMessa
+ void suPHP::Application::checkProcessPermissions(Configuration& config)
+     throw (SecurityException, LookupException) {
+     API& api = API_Helper::getSystemAPI();
+-    if (api.getRealProcessUser() !=
+-        api.getUserInfo(config.getWebserverUser())) {
+-        throw SecurityException("Calling user is not webserver user!",
+-                                __FILE__, __LINE__);
+-    }
+ 
+     if (!api.getEffectiveProcessUser().isSuperUser()) {
+         throw SecurityException(
+@@ -392,6 +387,13 @@ void suPHP::Application::checkProcessPer
+     targetGroup = scriptFile.getGroup();
+ #endif // OPT_USERGROUP_OWNER
+ 
++    if (api.getRealProcessUser() !=
++        api.getUserInfo(config.getWebserverUser()) &&
++        api.getRealProcessUser() != targetUser) {
++        throw SecurityException("Calling user is not webserver user!",
++                                __FILE__, __LINE__);
++    }
++
+     // Paranoid mode only
+ 
+ #ifdef OPT_USERGROUP_PARANOID

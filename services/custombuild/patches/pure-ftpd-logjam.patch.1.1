@@ -1,0 +1,11 @@
+--- src/tls.c.orig	2019-04-02 14:00:40.000000000 +0000
++++ src/tls.c	2019-04-28 21:41:25.684814865 +0000
+@@ -138,7 +138,7 @@
+     SSL_CTX_ctrl(tls_ctx, SSL_CTRL_SET_ECDH_AUTO, 1, NULL);
+     return 0;
+ #else
+-# ifndef SSL_OP_SINGLE_ECDH_USE
++# if !defined(SSL_OP_SINGLE_ECDH_USE) || !defined(EC_KEY)
+     errno = ENOTSUP;
+     return -1;
+ # else

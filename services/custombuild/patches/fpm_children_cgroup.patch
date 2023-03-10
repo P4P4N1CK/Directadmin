@@ -1,0 +1,41 @@
+--- sapi/fpm/fpm/fpm_children.c.orig	2021-01-05 03:45:07.000000000 -0700
++++ sapi/fpm/fpm/fpm_children.c	2021-02-04 16:59:32.198595918 -0700
+@@ -431,6 +431,39 @@
+ 				zlog(ZLOG_DEBUG, "unblocking signals, child born");
+ 				fpm_signals_unblock();
+ 				child->pid = pid;
++
++				//DA_START
++				char user_slice[128];
++				char systemd_start[128];
++				snprintf(systemd_start, sizeof(systemd_start), "/bin/systemctl start user-%d.slice", wp->set_uid);
++				snprintf(user_slice, sizeof(user_slice), "/sys/fs/cgroup/user.slice/user-%d.slice", wp->set_uid);
++				if (mkdir(user_slice, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == 0 || errno == EEXIST) {
++					strcat(user_slice, "/directadmin-exec.scope");
++					if (mkdir(user_slice, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == 0 || errno == EEXIST) {
++						strcat(user_slice, "/cgroup.procs");
++						FILE *fp = fopen(user_slice, "a");
++						//if there is no cgroup, we may hit permission denied. Wait moment.
++						if (fp == NULL) {
++							struct timespec ns;
++							ns.tv_sec = 0;
++							ns.tv_nsec = 10 * 1000000; //10ms
++							int count=20;
++							while (fp == NULL && count--) {
++								nanosleep(&ns, NULL);
++								fp = fopen(user_slice, "a");
++							}
++						}
++						if (fp == NULL) {
++							zlog(ZLOG_WARNING, "Error opening %s for writing: %s", user_slice, strerror(errno));
++						} else {
++							fprintf(fp, "%d\n", (int) pid);
++							fclose(fp);
++						}
++						system(systemd_start);
++					}
++				}
++				//DA_END
++
+ 				fpm_clock_get(&child->started);
+ 				fpm_parent_resources_use(child);

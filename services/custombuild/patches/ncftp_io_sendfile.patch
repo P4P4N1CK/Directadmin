@@ -1,0 +1,34 @@
+--- io_sendfile.c.orig	2019-09-26 02:01:16.604737373 +0200
++++ io_sendfile.c	2019-09-26 02:02:38.201732954 +0200
+@@ -132,13 +132,7 @@
+ int 
+ DoSendfileAvailable(void)
+ {
+-#if defined(FREEBSD_SENDFILE) || defined(MACOSX_SENDFILE)
+-	return 1;
+-#elif defined(LINUX) && (LINUX >= 22000)
+ 	return 1;
+-#else
+-    return 0;
+-#endif
+ }	/* DoSendfileAvailable */
+ 
+ 
+@@ -266,7 +260,7 @@
+ 	struct stat st;
+ #endif	/* FREEBSD, MACOSX */
+ 
+-#if defined(LINUX) && (LINUX >= 22000)
++#if defined(LINUX)
+ 	off_t off, off1;
+ #endif	/* LINUX */
+ 
+@@ -358,7 +352,7 @@
+ 		goto userspace_loop;
+ 	}
+ 
+-#if defined(LINUX) && (LINUX >= 22000)
++#if defined(LINUX)
+ 	if ((tntoread == 0) && (fstat(ifd, &st) == 0)) {
+ 		tntoread = ntoread = st.st_size;
+ 	}

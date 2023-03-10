@@ -1,0 +1,86 @@
+--- dovecot.conf.orig	2013-04-18 01:28:36.000000000 -0600
++++ dovecot.conf	2013-09-11 15:38:09.000000000 -0600
+@@ -15,7 +15,7 @@
+ mail_location = maildir:~/Maildir
+ 
+ default_process_limit=512
+-default_client_limit=2048
++default_client_limit=2560
+ 
+ passdb {
+   driver = shadow
+@@ -24,8 +24,13 @@
+   args = username_format=%n /etc/virtual/%d/passwd
+   driver = passwd-file
+ }
+-protocols = imap pop3
++protocols = imap pop3 lmtp sieve
+ service auth {
++  unix_listener auth-master {
++    user = mail
++    group = mail
++    mode = 0660
++  }
+   user = root
+ }
+ service imap-login {
+@@ -56,3 +61,59 @@
+ remote 127.0.0.1 {
+   mail_max_userip_connections = 40
+ }
++
++
++# LMTP socket for local delivery from exim
++service lmtp {
++  unix_listener lmtp-client {
++    user = mail
++    group = mail
++    mode = 0660
++  }
++}
++
++#Managesieve service (allows rules editing on client-side)
++service managesieve-login {
++  inet_listener sieve {
++    port = 4190
++  }
++  service_count = 1
++  process_min_avail = 4
++  vsz_limit = 64M
++}
++
++service managesieve {
++}
++
++protocol lmtp {
++  mail_plugins = $mail_plugins sieve
++  log_path = /var/log/dovecot-lmtp-errors.log
++  info_log_path = /var/log/dovecot-lmtp.log
++  postmaster_address = postmaster@hostname #required
++}
++
++protocol sieve {
++  managesieve_max_line_length = 65536
++  managesieve_implementation_string = Dovecot Pigeonhole
++  managesieve_max_compile_errors = 5
++  managesieve_logout_format = bytes=%i/%o
++  log_path = /var/log/dovecot-sieve-errors.log
++  info_log_path = /var/log/dovecot-sieve.log
++}
++
++plugin {
++    #More details: http://wiki2.dovecot.org/Pigeonhole/Sieve/Configuration
++    # the path to the user's main active script (per user)
++    sieve = ~/.dovecot.sieve
++
++    # path to a global sieve script file, which gets executed ONLY if user's private Sieve script doesn't exist,
++    sieve_default = /var/lib/dovecot/sieve/default.sieve 
++
++    # Directory where user's rules are stored
++    sieve_dir = ~/sieve 
++
++    # Directory for :global include scripts for the include extension
++    sieve_global_dir = /var/lib/dovecot/sieve/global/
++}
++
++

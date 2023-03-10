@@ -1,0 +1,23 @@
+--- sapi/fpm/fpm/fpm_main.c	2014-04-08 07:17:51.106951000 +0200
++++ sapi/fpm/fpm/fpm_main.c	2014-04-29 16:20:05.975142000 +0200
+@@ -1211,8 +1211,20 @@
+ 							char *path_info;
+ 							if (apache_was_here) {
+ 								/* recall that PATH_INFO won't exist */
++								int offset;
++								char *tmp_str;
+ 								path_info = script_path_translated + ptlen;
+ 								tflag = (slen != 0 && (!orig_path_info || strcmp(orig_path_info, path_info) != 0));
++								offset = strlen(env_script_name) - strlen(path_info);
++								if (strcmp(env_script_name + offset, path_info) == 0) {
++									tmp_str = (char *) emalloc(offset + 1);
++									memcpy(tmp_str, env_script_name, offset);
++									tmp_str[offset] = '\0';
++									if (!orig_script_name || !*orig_script_name) {
++										orig_script_name = env_script_name;
++									}
++									env_script_name = tmp_str;
++								}
+ 							} else {
+ 								path_info = env_path_info ? env_path_info + pilen - slen : NULL;
+ 								tflag = (orig_path_info != path_info);

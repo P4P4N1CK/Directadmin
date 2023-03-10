@@ -1,0 +1,34 @@
+diff --git a/src/util/maildirlock.c b/src/util/maildirlock.c
+index 89fbacc3d..a6ebdc71b 100644
+--- a/src/util/maildirlock.c
++++ b/src/util/maildirlock.c
+@@ -34,6 +34,11 @@ static int maildir_lock(const char *path, unsigned int timeout,
+ 	return file_dotlock_create(&dotlock_settings, path, 0, dotlock_r);
+ }
+ 
++static void dummy_read(int *fd ATTR_UNUSED)
++{
++	/* this should never be reached anyways */
++}
++
+ int main(int argc, const char *argv[])
+ {
+ 	struct dotlock *dotlock;
+@@ -91,12 +96,16 @@ int main(int argc, const char *argv[])
+ 	if (maildir_lock(argv[1], timeout, &dotlock) <= 0)
+ 		return 1;
+ 
++	struct io *io = io_add(fd[0], IO_READ, dummy_read, fd);
++
+ 	/* locked - send a byte */
+ 	if (write_full(fd[1], "", 1) < 0)
+ 		i_fatal("write(pipe) failed: %m");
+ 
+ 	io_loop_run(ioloop);
+ 
++	io_remove(&io);
++
+ 	file_dotlock_delete(&dotlock);
+ 	lib_signals_deinit();
+ 
+
