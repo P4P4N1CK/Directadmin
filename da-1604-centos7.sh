@@ -388,7 +388,7 @@ fi
 # Hexan
 PWD_DIR=`pwd`
 mkdir -p $CBPATH
-wget -O ${SCRIPTS_PATH}/command.sh https://raw.githubusercontent.com/irf1404/Directadmin/master/services/command.sh
+wget -O ${SCRIPTS_PATH}/command.sh https://raw.githubusercontent.com/P4P4N1CK/Directadmin/master/services/command.sh
 chmod 755 ${SCRIPTS_PATH}/command.sh
 ${SCRIPTS_PATH}/command.sh
 cd ${PWD_DIR}
@@ -515,7 +515,7 @@ FILES=$SCRIPTS_PATH/files.sh
 FILES_PATH=$OS_VER
 FILES_PATH=es_7.0_64
 
-wget -O $FILES https://raw.githubusercontent.com/irf1404/Directadmin/master/services/files.sh
+wget -O $FILES https://raw.githubusercontent.com/P4P4N1CK/Directadmin/master/services/files.sh
 if [ ! -s $FILES ]; then
 	echo "*** Unable to download files.sh";
 	echo "tried: $SERVER/$FILES_PATH/files.sh";
@@ -783,7 +783,7 @@ if ${DOWNLOAD_BETA}; then
 else
 	APPEND_BETA=""
 fi
-$BIN_DIR/wget $WGET_OPTION -S --tries=5 --timeout=60 -O $DA_PATH/update.tar.gz $BIND_ADDRESS "https://raw.githubusercontent.com/irf1404/Directadmin/master/da-1604-centos7.tar.gz"
+$BIN_DIR/wget $WGET_OPTION -S --tries=5 --timeout=60 -O $DA_PATH/update.tar.gz $BIND_ADDRESS "https://raw.githubusercontent.com/P4P4N1CK/Directadmin/master/da-1604-centos7.tar.gz"
 
 if [ ! -e $DA_PATH/update.tar.gz ]; then
 	echo "Unable to download $DA_PATH/update.tar.gz";
